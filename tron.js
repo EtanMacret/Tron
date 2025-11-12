@@ -1,6 +1,5 @@
 console.log("Tron.js inserer");
 
-let canvas = document.getElementsByTagName("canvas")[0];
 const scale = 10;
 
 class Player{
@@ -51,27 +50,32 @@ class Game{
     #player1;
     #player2;
     #width;
-    #heigth;
+    #height;
 
-    constructor(){
-        this.#width = 80;
-        this.#heigth = 59
+    constructor(w, h, p1, p2){
+        this.#width = w;
+        this.#height = h;
         this.#map = new Array();
-        for(let i = 0; i<this.#heigth; i++){
+        for(let i = 0; i<this.#height; i++){
             this.#map.push(new Array());
             for(let j=0; j<this.#width; j++) this.#map[i].push(0);
         }
-        this.#player1 = new Player(1, 28);
-        this.#player2 = new Player(1, 30);
+        this.#player1 = p1
+        this.#player2 = p2
         this.#map[this.#player1.y][this.#player1.x] = 1;
         this.#map[this.#player2.y][this.#player2.x] = 2;
     }
+
+    get width() { return this.#width;}
+    get height() { return this.#height;}
+    get player1() { return this.#player1;}
+    get player2() { return this.#player2;}
 
     toString(){
         let msg = "";
         let separator = "+";
         for(let j=0; j<this.#width;j++) separator += "-+";
-        for(let i=0; i<this.#heigth; i++){
+        for(let i=0; i<this.#height; i++){
             msg += separator + "\n|";
             for(let j=0; j<this.#width;j++) msg += this.#map[i][j] + "|";
             msg += "\n";
@@ -81,17 +85,29 @@ class Game{
     }
 }
 
-let ctx = document.getElementsByTagName("canvas")[0].getContext("2d");
-let p1 = new Player(1, 28);
-let p2 = new Player(1, 30);
-ctx.moveTo(p1.x * scale, p1.y * scale);
+let game = new Game(80, 59, new Player(1, 28), new Player(1, 30));
+
+let divGame = document.getElementsByClassName("game")[0];
+
+divGame.width = game.width * scale;
+divGame.height = game.height * scale;
+
+let canvas = divGame.getElementsByTagName("canvas")[0];
+let menu = divGame.getElementsByClassName("menu")[0];
+
+canvas.width = game.width * scale;
+canvas.height = game.height * scale;
+
+menu.width = game.width * scale;
+menu.height = game.height * scale;
+
+console.log(menu.width, menu.height);
+let ctx = canvas.getContext("2d");
+ctx.moveTo(game.player1.x * scale, game.player1.y * scale);
 ctx.strokeStyle = 'blue';
 ctx.lineWidth = scale;
 ctx.lineCap = 'round';
 
-let game = new Game()
-
-console.log(game.toString());
 
 /*
 setInterval(
