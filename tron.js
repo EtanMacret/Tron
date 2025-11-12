@@ -28,12 +28,12 @@ class Player{
     move(){
         switch(this.#direction){
             case 'Up':
-                this.#y += 1
+                this.#y += 1 // this.#y -=1
                 break
             case 'Down':
-                this.#y -= 1
+                this.#y -= 1 //this.#y +=1
                 break
-            case 'Rigth':
+            case 'Right':
                 this.#x += 1
                 break
             case 'Left':
