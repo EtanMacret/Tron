@@ -12,7 +12,7 @@ class Player{
     constructor(x, y){
         this.#x = x;
         this.#y = y;
-        this.#direction = "Rigth"
+        this.#direction = "Right"
     }
 
     set x(x){ this.#x = x }
