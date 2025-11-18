@@ -175,8 +175,8 @@ class Game{
      */
     draw_line(context, player){
         context.strokeStyle = player.color;
-        context.moveTo(player.x * scale, player.y * scale);
         context.beginPath();
+        context.moveTo(player.x * scale, player.y * scale);
         player.move();
         if (
             player.x < 0 ||
@@ -186,12 +186,11 @@ class Game{
             this.#map[player.y][player.x] != 0
         ) {
             player.die();
+            context.closePath();
             this.#is_pause = true;
         }
         else{
             this.#map[player.y][player.x] = (player == this.#player1)? 1: 2;
-            
-            context.beginPath();
             context.lineTo(player.x * scale, player.y * scale);
             context.stroke();
             context.closePath();
