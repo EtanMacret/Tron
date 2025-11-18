@@ -8,7 +8,11 @@ class Player{
     #y;
     #direction;
 
-
+    /**
+     * 
+     * @param {number} x 
+     * @param {number} y 
+     */
     constructor(x, y){
         this.#x = x;
         this.#y = y;
@@ -28,10 +32,10 @@ class Player{
     move(){
         switch(this.#direction){
             case 'Up':
-                this.#y += 1 // this.#y -=1
+                this.#y -= 1
                 break
             case 'Down':
-                this.#y -= 1 //this.#y +=1
+                this.#y += 1
                 break
             case 'Right':
                 this.#x += 1
@@ -52,6 +56,13 @@ class Game{
     #width;
     #height;
 
+    /**
+     * 
+     * @param {number} w 
+     * @param {number} h 
+     * @param {Player} p1 
+     * @param {Player} p2 
+     */
     constructor(w, h, p1, p2){
         this.#width = w;
         this.#height = h;
