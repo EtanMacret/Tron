@@ -12,6 +12,13 @@ class Player{
     #x;
     #y;
     #direction;
+    #key_up;
+    #key_down;
+    #key_left;
+    #key_rigth;
+    #key_jump;
+    #color
+    #dead
     //#endregion Player.Property
 
     /**
@@ -23,6 +30,13 @@ class Player{
         this.#x = x;
         this.#y = y;
         this.#direction = "Right"
+        this.#key_up = 'KeyW';
+        this.#key_down = 'KeyX';
+        this.#key_left = 'KeyA';
+        this.#key_rigth = 'KeyD';
+        this.#key_jump = 'KeyS';
+        this.#color = "blue"
+        this.#dead = false;
     }
 
     //#region Player.Method
@@ -47,15 +61,49 @@ class Player{
             default: break
         }
     }
+    
+    isDead() {return this.#dead}
+
+    die() {
+        console.log(`${this.#color} died`);
+        
+        this.#dead = true
+    }
+
+    /**
+     * 
+     * @param {Game} game 
+     */
+    jump(game){
+        if(
+            this.#x -1 >= 0 &&
+            this.#x +1 < game.width &&
+            this.#y -1 >= 0 &&
+            this.#y +1 < game.height &&
+            game.map()[this.#y][this.#x] == 0
+        ) this.move()
+    }
 
     //#endregion
 
     //#region Player.GetterSetter
     set x(x){ this.#x = x }
     set y(y){ this.#y = y }
+    set key_up(code){}
+    set key_down(code){}
+    set key_left(code){}
+    set key_rigth(code){}
+    set key_jump(code){}
+    set color(color){ this.#color = color }
 
     get x() { return this.#x }
     get y() { return this.#y }
+    get key_up(){ return this.#key_up }
+    get key_down(){ return this.#key_down }
+    get key_left(){ return this.#key_left }
+    get key_rigth(){ return this.#key_rigth }
+    get key_jump(){ return this.#key_jump }
+    get color() { return this.#color}
     //#endregion
 
 }
@@ -77,6 +125,7 @@ class Game{
     #player2;
     #width;
     #height;
+    #is_pause;
     //#endregion
 
     /**
@@ -94,13 +143,57 @@ class Game{
             this.#map.push(new Array());
             for(let j=0; j<this.#width; j++) this.#map[i].push(0);
         }
-        this.#player1 = p1
-        this.#player2 = p2
+        this.#player1 = p1;
+        this.#player2 = p2;
+        this.#player2.color = 'red';
+        this.#is_pause = true;
         this.#map[this.#player1.y][this.#player1.x] = 1;
         this.#map[this.#player2.y][this.#player2.x] = 2;
     }
 
     //#region Game.Method
+    /**
+     * 
+     * @param {CanvasRenderingContext2D} context 
+     */
+    play(context){
+        if(!this.#is_pause){
+            this.draw_line(context, this.#player1);
+            this.draw_line(context, this.#player2);
+        }
+    }
+
+    stop(){ this.#is_pause = true }
+
+    start(){ this.#is_pause = false }
+
+    /**
+     * 
+     * @param {CanvasRenderingContext2D} context 
+     * @param {Player} player 
+     */
+    draw_line(context, player){
+        context.strokeStyle = player.color
+        context.moveTo(player.x * scale, player.y * scale);
+        context.beginPath();
+        player.move();
+        if (
+            player.x < 0 ||
+            player.x >= game.width ||
+            player.y < 0 ||
+            player.y >= game.height ||
+            this.#map[player.y][player.x] != 0
+        ) {
+            player.die();
+            this.#is_pause = true;
+        }
+        else{
+            context.beginPath();
+            context.lineTo(player.x * scale, player.y * scale);
+            context.closePath()
+            context.stroke();
+        }
+    }
     //#endregion
 
     //#region Game.GetterSetter
