@@ -249,22 +249,26 @@ ctx.lineCap = 'round';
 
 
 //#region TEST
-/*
+game.start();
+
 setInterval(
-    function draw_line(player){
-        ctx.moveTo(player.x * scale, player.y * scale);
-        player.move();
-            ctx.lineTo(player.x * scale, player.y * scale);
-            ctx.stroke();
+    (context, gm)=>{
+        game.play(context)
     },
     1_000,
-    p1
+    ctx,
+    game
 );
-*/
-
-
 //#endregion
 
 //#region EventListener
-document.addEventListener("keypress", event => console.log(event.code));
+document.addEventListener("keypress", event => {
+    console.log(event.code);
+    
+    if( event.code == 'Space') {
+        game.stop();
+        console.log("game stoped");
+        
+    }
+});
 //#endregion
