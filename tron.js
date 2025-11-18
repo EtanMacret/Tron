@@ -2,11 +2,17 @@ console.log("Tron.js inserer");
 
 const scale = 10;
 
-class Player{
+//#region Player
+/**
+ * 
+ */
 
+class Player{
+    //#region Player.Property
     #x;
     #y;
     #direction;
+    //#endregion Player.Property
 
     /**
      * 
@@ -19,12 +25,7 @@ class Player{
         this.#direction = "Right"
     }
 
-    set x(x){ this.#x = x }
-    set y(y){ this.#y = y }
-
-    get x() { return this.#x }
-    get y() { return this.#y }
-
+    //#region Player.Method
     change_direction(direction){
         this.#direction = direction
     }
@@ -47,14 +48,36 @@ class Player{
         }
     }
 
-}
+    //#endregion
 
+    //#region Player.GetterSetter
+    set x(x){ this.#x = x }
+    set y(y){ this.#y = y }
+
+    get x() { return this.#x }
+    get y() { return this.#y }
+    //#endregion
+
+}
+//#endregion
+
+
+
+
+
+
+//#region Game
+/**
+ * 
+ */
 class Game{
+    //#region Game.Property
     #map;
     #player1;
     #player2;
     #width;
     #height;
+    //#endregion
 
     /**
      * 
@@ -77,10 +100,15 @@ class Game{
         this.#map[this.#player2.y][this.#player2.x] = 2;
     }
 
+    //#region Game.Method
+    //#endregion
+
+    //#region Game.GetterSetter
     get width() { return this.#width;}
     get height() { return this.#height;}
     get player1() { return this.#player1;}
     get player2() { return this.#player2;}
+    //#endregion
 
     toString(){
         let msg = "";
@@ -95,31 +123,39 @@ class Game{
         return msg;
     }
 }
+//#endregion
 
+
+
+
+
+//#region Initialisation Jeu
 let game = new Game(80, 59, new Player(1, 28), new Player(1, 30));
+//#endregion
 
+//#region Initialisation Affichage
 let divGame = document.getElementsByClassName("game")[0];
-
 divGame.width = game.width * scale;
 divGame.height = game.height * scale;
-
 let canvas = divGame.getElementsByTagName("canvas")[0];
 let menu = divGame.getElementsByClassName("menu")[0];
-
 canvas.width = game.width * scale;
 canvas.height = game.height * scale;
-
 menu.width = game.width * scale;
 menu.height = game.height * scale;
+//#endregion
 
+//#region Initialisation Contect Canves
 console.log(menu.width, menu.height);
 let ctx = canvas.getContext("2d");
 ctx.moveTo(game.player1.x * scale, game.player1.y * scale);
 ctx.strokeStyle = 'blue';
 ctx.lineWidth = scale;
 ctx.lineCap = 'round';
+//#endregion
 
 
+//#region TEST
 /*
 setInterval(
     function draw_line(player){
@@ -134,5 +170,8 @@ setInterval(
 */
 
 
-document.addEventListener("keypress", event => console.log(event.code));
+//#endregion
 
+//#region EventListener
+document.addEventListener("keypress", event => console.log(event.code));
+//#endregion
