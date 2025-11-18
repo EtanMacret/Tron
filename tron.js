@@ -189,6 +189,8 @@ class Game{
             this.#is_pause = true;
         }
         else{
+            this.#map[player.y][player.x] = (player == this.#player1)? 1: 2;
+            
             context.beginPath();
             context.lineTo(player.x * scale, player.y * scale);
             context.stroke();
@@ -252,18 +254,15 @@ ctx.lineCap = 'round';
 game.start();
 
 setInterval(
-    (context, gm)=>{
-        gm.play(context);
+    (context )=>{
+        game.play(context);
         
     },
     1_000,
-    ctx,
-    game
+    ctx
 );
 
-setTimeout(
-        console.log(game.toString()),
-    1_000);
+setTimeout( ()=>{console.log(game.toString())}, 2_000);
 //#endregion
 
 //#region EventListener
