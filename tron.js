@@ -145,6 +145,7 @@ class Game{
         }
         this.#player1 = p1;
         this.#player2 = p2;
+        this.#player1.color = 'blue';
         this.#player2.color = 'red';
         this.#is_pause = true;
         this.#map[this.#player1.y][this.#player1.x] = 1;
@@ -156,7 +157,7 @@ class Game{
      * 
      * @param {CanvasRenderingContext2D} context 
      */
-    play(context){
+    play(context){;
         if(!this.#is_pause){
             this.draw_line(context, this.#player1);
             this.draw_line(context, this.#player2);
@@ -173,7 +174,7 @@ class Game{
      * @param {Player} player 
      */
     draw_line(context, player){
-        context.strokeStyle = player.color
+        context.strokeStyle = player.color;
         context.moveTo(player.x * scale, player.y * scale);
         context.beginPath();
         player.move();
@@ -190,8 +191,8 @@ class Game{
         else{
             context.beginPath();
             context.lineTo(player.x * scale, player.y * scale);
-            context.closePath()
             context.stroke();
+            context.closePath();
         }
     }
     //#endregion
@@ -239,7 +240,6 @@ menu.height = game.height * scale;
 //#endregion
 
 //#region Initialisation Contect Canves
-console.log(menu.width, menu.height);
 let ctx = canvas.getContext("2d");
 ctx.moveTo(game.player1.x * scale, game.player1.y * scale);
 ctx.strokeStyle = 'blue';
@@ -253,12 +253,17 @@ game.start();
 
 setInterval(
     (context, gm)=>{
-        game.play(context)
+        gm.play(context);
+        
     },
     1_000,
     ctx,
     game
 );
+
+setTimeout(
+        console.log(game.toString()),
+    1_000);
 //#endregion
 
 //#region EventListener
