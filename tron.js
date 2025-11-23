@@ -15,7 +15,7 @@ class Player{
     #key_up;
     #key_down;
     #key_left;
-    #key_rigth;
+    #key_right;
     #key_jump;
     #color
     #dead
@@ -33,7 +33,7 @@ class Player{
         this.#key_up = 'KeyW';
         this.#key_down = 'KeyX';
         this.#key_left = 'KeyA';
-        this.#key_rigth = 'KeyD';
+        this.#key_right = 'KeyD';
         this.#key_jump = 'KeyS';
         this.#color = "blue"
         this.#dead = false;
@@ -84,6 +84,14 @@ class Player{
         ) this.move()
     }
 
+    change_controle(obj){
+        this.#key_up = obj.key_up;
+        this.#key_down = obj.key_down;
+        this.#key_left = obj.key_left;
+        this.#key_right = obj.key_right;
+        this.#key_jump = obj.key_jump;
+    }
+
     //#endregion
 
     //#region Player.GetterSetter
@@ -92,7 +100,7 @@ class Player{
     set key_up(code){}
     set key_down(code){}
     set key_left(code){}
-    set key_rigth(code){}
+    set key_right(code){}
     set key_jump(code){}
     set color(color){ this.#color = color }
 
@@ -101,7 +109,7 @@ class Player{
     get key_up(){ return this.#key_up }
     get key_down(){ return this.#key_down }
     get key_left(){ return this.#key_left }
-    get key_rigth(){ return this.#key_rigth }
+    get key_right(){ return this.#key_right }
     get key_jump(){ return this.#key_jump }
     get color() { return this.#color}
     //#endregion
@@ -150,6 +158,13 @@ class Game{
         this.#player2.color = 'red';
         this.#is_pause = true;
         this.#key_stop = 'Space';
+        this.#player2.change_controle({
+            'key_up' : 'KeyO',
+            'key_down' : 'Comma',
+            'key_left' : 'KeyK',
+            'key_right' : 'Semicolon',
+            'key_jump' : 'KeyL'
+        });
         this.#map[this.#player1.y][this.#player1.x] = 1;
         this.#map[this.#player2.y][this.#player2.x] = 2;
     }
@@ -286,7 +301,7 @@ document.addEventListener("keypress", event => {
         case game.player1.key_left:
             game.player1.change_direction('Left');
             break;
-        case game.player1.key_rigth:
+        case game.player1.key_right:
             game.player1.change_direction('Right');
             break;
         case game.player1.key_jump:
@@ -301,7 +316,7 @@ document.addEventListener("keypress", event => {
         case game.player2.key_left:
             game.player2.change_direction('Left');
             break;
-        case game.player2.key_rigth:
+        case game.player2.key_right:
             game.player2.change_direction('Right');
             break;
         case game.player2.key_jump:
