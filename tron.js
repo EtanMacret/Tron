@@ -263,6 +263,11 @@ setInterval(
     1_000,
     ctx
 );
+/*let gameInterval = setInterval(...);
+setTimeout(() => {
+    clearInterval(gameInterval);  // ← Ça c'est arrêter
+    console.log(game.toString());
+}, 2_000);*/
 
 setTimeout( ()=>{console.log(game.toString())}, 2_000);
 //#endregion
