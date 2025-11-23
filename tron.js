@@ -273,5 +273,32 @@ document.addEventListener("keypress", event => {
         console.log("game stoped");
         
     }
+     // Contrôles Player 1 
+    if(event.code == game.player1.key_up) {
+        game.player1.change_direction('Up');
+    }
+    if(event.code == game.player1.key_down) {
+        game.player1.change_direction('Down');
+    }
+    if(event.code == game.player1.key_left) {
+        game.player1.change_direction('Left');
+    }
+    if(event.code == game.player1.key_rigth) {
+        game.player1.change_direction('Right');
+    }
+    
+    // Contrôles Player 2 
+    if(event.code == 'ArrowUp') {
+        game.player2.change_direction('Up');
+    }
+    if(event.code == 'ArrowDown') {
+        game.player2.change_direction('Down');
+    }
+    if(event.code == 'ArrowLeft') {
+        game.player2.change_direction('Left');
+    }
+    if(event.code == 'ArrowRight') {
+        game.player2.change_direction('Right');
+    }
 });
 //#endregion
