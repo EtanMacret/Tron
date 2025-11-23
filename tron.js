@@ -117,6 +117,10 @@ class Player{
         }
     }
 
+    /**
+     * 
+     * @param {Object} obj 
+     */
     change_controle(obj){
         this.#key_up = obj.key_up;
         this.#key_down = obj.key_down;
@@ -286,10 +290,14 @@ divGame.width = game.width * scale;
 divGame.height = game.height * scale;
 let canvas = divGame.getElementsByTagName("canvas")[0];
 let menu = divGame.getElementsByClassName("menu")[0];
+let game_over = divGame.getElementsByClassName("game_over")[0];
 canvas.width = game.width * scale;
 canvas.height = game.height * scale;
 menu.width = game.width * scale;
 menu.height = game.height * scale;
+game_over.width = game.width * scale;
+game_over.height = game.height * scale;
+game_over.classList.add('hidden');
 //#endregion
 
 //#region Initialisation Contect Canves
@@ -307,6 +315,14 @@ game.start();
 setInterval(
     (context )=>{
         game.play(context);
+        if(
+            game.player1.isDead() ||
+            game.player2.isDead()
+        ){
+            game.stop;
+            game_over.textContent = `${game.player1.isDead()? game.player2.color: game.player1.color} a gagné!`;
+            game_over.classList.remove('hidden');
+        }
     },
     1_000,
     ctx
