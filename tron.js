@@ -292,7 +292,7 @@ canvas.width = game.width * scale;
 canvas.height = game.height * scale;
 menu.width = game.width * scale;
 menu.height = game.height * scale;
-/*function showMenu() {
+function showMenu() {
     menu.hidden = false;
     canvas.style.filter = "blur(5px)";
 }
@@ -367,11 +367,11 @@ setInterval(
     (context )=>{
         game.play(context);
     },
-    1_000,
+    1_00,
     ctx
 );
 
-setTimeout( ()=>{console.log(game.toString())}, 2_000);
+setTimeout( ()=>{console.log(game.toString())}, 1_000);
 //#endregion
 
 //#region EventListener
