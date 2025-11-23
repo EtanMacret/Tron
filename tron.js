@@ -126,6 +126,7 @@ class Game{
     #width;
     #height;
     #is_pause;
+    #key_stop;
     //#endregion
 
     /**
@@ -148,6 +149,7 @@ class Game{
         this.#player1.color = 'blue';
         this.#player2.color = 'red';
         this.#is_pause = true;
+        this.#key_stop = 'Space';
         this.#map[this.#player1.y][this.#player1.x] = 1;
         this.#map[this.#player2.y][this.#player2.x] = 2;
     }
@@ -199,10 +201,11 @@ class Game{
     //#endregion
 
     //#region Game.GetterSetter
-    get width() { return this.#width;}
-    get height() { return this.#height;}
-    get player1() { return this.#player1;}
-    get player2() { return this.#player2;}
+    get width() { return this.#width; }
+    get height() { return this.#height; }
+    get player1() { return this.#player1; }
+    get player2() { return this.#player2; }
+    get key_stop() { return this.#key_stop; }
     //#endregion
 
     toString(){
@@ -268,37 +271,43 @@ setTimeout( ()=>{console.log(game.toString())}, 2_000);
 document.addEventListener("keypress", event => {
     console.log(event.code);
     
-    if( event.code == 'Space') {
-        game.stop();
-        console.log("game stoped");
-        
-    }
-     // Contrôles Player 1 
-    if(event.code == game.player1.key_up) {
-        game.player1.change_direction('Up');
-    }
-    if(event.code == game.player1.key_down) {
-        game.player1.change_direction('Down');
-    }
-    if(event.code == game.player1.key_left) {
-        game.player1.change_direction('Left');
-    }
-    if(event.code == game.player1.key_rigth) {
-        game.player1.change_direction('Right');
-    }
-    
-    // Contrôles Player 2 
-    if(event.code == 'ArrowUp') {
-        game.player2.change_direction('Up');
-    }
-    if(event.code == 'ArrowDown') {
-        game.player2.change_direction('Down');
-    }
-    if(event.code == 'ArrowLeft') {
-        game.player2.change_direction('Left');
-    }
-    if(event.code == 'ArrowRight') {
-        game.player2.change_direction('Right');
+    //Mouvement
+    switch(event.code){
+        case game.key_stop:
+            game.stop();
+            console.log("game stoped");
+            break;
+        case game.player1.key_up:
+            game.player1.change_direction('Up');
+            break;
+        case game.player1.key_down:
+            game.player1.change_direction('Down');
+            break;
+        case game.player1.key_left:
+            game.player1.change_direction('Left');
+            break;
+        case game.player1.key_rigth:
+            game.player1.change_direction('Rigth');
+            break;
+        case game.player1.key_jump:
+            game.player1.jump();
+            break;
+        case game.player2.key_up:
+            game.player2.change_direction('Up');
+            break;
+        case game.player2.key_down:
+            game.player2.change_direction('Down');
+            break;
+        case game.player2.key_left:
+            game.player2.change_direction('Left');
+            break;
+        case game.player2.key_rigth:
+            game.player2.change_direction('Rigth');
+            break;
+        case game.player2.key_jump:
+            game.player2.jump();
+            break;
+        default: break;
     }
 });
 //#endregion
