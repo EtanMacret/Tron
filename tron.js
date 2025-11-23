@@ -292,6 +292,7 @@ canvas.width = game.width * scale;
 canvas.height = game.height * scale;
 menu.width = game.width * scale;
 menu.height = game.height * scale;
+/*
 function showMenu() {
     menu.hidden = false;
     canvas.style.filter = "blur(5px)";
