@@ -70,18 +70,51 @@ class Player{
         this.#dead = true
     }
 
+    next(){
+        let next_x = this.#x;
+        let next_y = this.#y;
+        switch(this.#direction){
+            case 'Up':
+                next_y -= 1
+                break
+            case 'Down':
+                next_y += 1
+                break
+            case 'Right':
+                next_x += 1
+                break
+            case 'Left':
+                next_x -= 1
+                break
+            default: break
+        }
+        return [next_x, next_y];
+    }
+
     /**
      * 
      * @param {Game} game 
      */
     jump(game){
+        let next_x;
+        let next_y;
+        [next_x, next_y] = this.next();
+        console.log( this.#x -1 >= 0 ,
+            this.#x +1 < game.width ,
+            this.#y -1 >= 0 ,
+            this.#y +1 < game.height,
+            game.map[next_y][next_x]
+        );
         if(
             this.#x -1 >= 0 &&
             this.#x +1 < game.width &&
             this.#y -1 >= 0 &&
             this.#y +1 < game.height &&
-            game.map()[this.#y][this.#x] == 0
-        ) this.move()
+            game.map[next_y][next_x] == 0
+        ){
+            console.log(`${this.#color} jump`);
+            this.move();
+        }
     }
 
     change_controle(obj){
@@ -221,6 +254,7 @@ class Game{
     get player1() { return this.#player1; }
     get player2() { return this.#player2; }
     get key_stop() { return this.#key_stop; }
+    get map() { return this.#map; }
     //#endregion
 
     toString(){
@@ -273,16 +307,10 @@ game.start();
 setInterval(
     (context )=>{
         game.play(context);
-        
     },
     1_000,
     ctx
 );
-/*let gameInterval = setInterval(...);
-setTimeout(() => {
-    clearInterval(gameInterval);  // ← Ça c'est arrêter
-    console.log(game.toString());
-}, 2_000);*/
 
 setTimeout( ()=>{console.log(game.toString())}, 2_000);
 //#endregion
@@ -306,11 +334,11 @@ document.addEventListener("keypress", event => {
         case game.player1.key_left:
             game.player1.change_direction('Left');
             break;
-        case game.player1.key_right:
+        case game.player1.key_right:    
             game.player1.change_direction('Right');
             break;
         case game.player1.key_jump:
-            game.player1.jump();
+            game.player1.jump(game);
             break;
         case game.player2.key_up:
             game.player2.change_direction('Up');
@@ -325,7 +353,7 @@ document.addEventListener("keypress", event => {
             game.player2.change_direction('Right');
             break;
         case game.player2.key_jump:
-            game.player2.jump();
+            game.player2.jump(game);
             break;
         default: break;
     }
