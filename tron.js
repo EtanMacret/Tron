@@ -287,7 +287,7 @@ document.addEventListener("keypress", event => {
             game.player1.change_direction('Left');
             break;
         case game.player1.key_rigth:
-            game.player1.change_direction('Rigth');
+            game.player1.change_direction('Right');
             break;
         case game.player1.key_jump:
             game.player1.jump();
@@ -302,7 +302,7 @@ document.addEventListener("keypress", event => {
             game.player2.change_direction('Left');
             break;
         case game.player2.key_rigth:
-            game.player2.change_direction('Rigth');
+            game.player2.change_direction('Right');
             break;
         case game.player2.key_jump:
             game.player2.jump();
