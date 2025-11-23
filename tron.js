@@ -321,7 +321,7 @@ setInterval(
         ){
             game.stop;
             game_over.textContent = `${game.player1.isDead()? game.player2.color: game.player1.color} a gagné!`;
-            game_over.classList.remove('hidden');
+            game_over.classList.remove('hidden')
         }
     },
     1_000,
