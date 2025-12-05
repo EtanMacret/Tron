@@ -99,17 +99,11 @@ class Player{
         let next_x;
         let next_y;
         [next_x, next_y] = this.next();
-        console.log( this.#x -1 >= 0 ,
-            this.#x +1 < game.width ,
-            this.#y -1 >= 0 ,
-            this.#y +1 < game.height,
-            game.map[next_y][next_x]
-        );
         if(
-            this.#x -1 >= 0 &&
-            this.#x +1 < game.width &&
-            this.#y -1 >= 0 &&
-            this.#y +1 < game.height &&
+            this.#x -2 >= 0 &&
+            this.#x +2 < game.width &&
+            this.#y -2 >= 0 &&
+            this.#y +2 < game.height &&
             game.map[next_y][next_x] == 0
         ){
             console.log(`${this.#color} jump`);
@@ -148,7 +142,8 @@ class Player{
     get key_left(){ return this.#key_left }
     get key_right(){ return this.#key_right }
     get key_jump(){ return this.#key_jump }
-    get color() { return this.#color}
+    get color() { return this.#color }
+    get direction() { return this.#direction }
     //#endregion
 
 }
@@ -290,6 +285,7 @@ divGame.width = game.width * scale;
 divGame.height = game.height * scale;
 let canvas = divGame.getElementsByTagName("canvas")[0];
 let menu = divGame.getElementsByClassName("menu")[0];
+let game_over = divGame.getElementsByClassName("menu")[0];
 let btnVersus = menu.getElementsByTagName("button")[0];
 let btnOption = menu.getElementsByTagName("button")[1];
 canvas.width = game.width * scale;
@@ -299,6 +295,65 @@ menu.height = game.height * scale;
 game_over.width = game.width * scale;
 game_over.height = game.height * scale;
 game_over.classList.add('hidden');
+
+function showMenu() {
+    menu.hidden = false;
+    canvas.style.filter = "blur(5px)";
+}
+
+// Fonction pour masquer le menu
+function hideMenu() {
+    menu.hidden = true;
+    canvas.style.filter = "none";
+}
+
+// Bouton Versus : Lance la partie
+btnVersus.addEventListener("click", () => {
+    console.log("Versus clicked");
+    hideMenu();
+    resetGame();
+    game.start();
+});
+
+// Bouton Option : Afficher les options (à développer)
+btnOption.addEventListener("click", () => {
+    console.log("Option clicked");
+    // À compléter selon vos besoins
+    alert("Options - À venir");
+});
+
+// Fonction pour réinitialiser le jeu
+function resetGame() {
+    // Efface le canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Réinitialise le jeu
+    game = new Game(80, 59, new Player(1, 28), new Player(78, 28));
+    
+    // Réinitialise le contexte
+    ctx.moveTo(game.player1.x * scale, game.player1.y * scale);
+    ctx.strokeStyle = 'blue';
+    ctx.lineWidth = scale;
+    ctx.lineCap = 'round';
+}
+
+// Fonction pour afficher le gagnant et revenir au menu
+function gameOver(winner) {
+    game.stop();
+
+    
+    setTimeout(() => {
+        if (winner === 1) {
+            alert("🏆 Joueur 1 (Bleu) a gagné !");
+        } else if (winner === 2) {
+            alert("🏆 Joueur 2 (Rouge) a gagné !");
+        } else {
+            alert("⚔️ Égalité !");
+        }
+        showMenu();
+    }, 500);
+}
+//*/
 //#endregion
 
 //#region Initialisation Contect Canves
@@ -322,20 +377,19 @@ setInterval(
         ){
             game.stop;
             game_over.textContent = `${game.player1.isDead()? game.player2.color: game.player1.color} a gagné!`;
-            game_over.classList.remove('hidden')
+            game_over.classList.remove('hidden');
         }
     },
-    1_000,
+    500,
     ctx
 );
 
-setTimeout( ()=>{console.log(game.toString())}, 2_000);
+setTimeout( ()=>{console.log(game.toString())}, 1_000);
 //#endregion
 
 //#region EventListener
 document.addEventListener("keypress", event => {
     console.log(event.code);
-    
     //Mouvement
     switch(event.code){
         case game.key_stop:
@@ -343,31 +397,31 @@ document.addEventListener("keypress", event => {
             console.log("game stoped");
             break;
         case game.player1.key_up:
-            game.player1.change_direction('Up');
+            if (game.player1.direction != "Down") game.player1.change_direction('Up');
             break;
         case game.player1.key_down:
-            game.player1.change_direction('Down');
+            if (game.player1.direction != "Up") game.player1.change_direction('Down');
             break;
         case game.player1.key_left:
-            game.player1.change_direction('Left');
+            if (game.player1.direction != "Right") game.player1.change_direction('Left');
             break;
         case game.player1.key_right:    
-            game.player1.change_direction('Right');
+            if (game.player1.direction != "Left") game.player1.change_direction('Right');
             break;
         case game.player1.key_jump:
             game.player1.jump(game);
             break;
         case game.player2.key_up:
-            game.player2.change_direction('Up');
+            if (game.player2.direction != "Down") game.player2.change_direction('Up');
             break;
         case game.player2.key_down:
-            game.player2.change_direction('Down');
+            if (game.player2.direction != "Up") game.player2.change_direction('Down');
             break;
         case game.player2.key_left:
-            game.player2.change_direction('Left');
+            if (game.player2.direction != "Right") game.player2.change_direction('Left');
             break;
         case game.player2.key_right:
-            game.player2.change_direction('Right');
+            if (game.player2.direction != "Left") game.player2.change_direction('Right');
             break;
         case game.player2.key_jump:
             game.player2.jump(game);
