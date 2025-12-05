@@ -367,7 +367,7 @@ ctx.lineCap = 'round';
 
 //#region TEST
 game.start();
-
+let gameInterval = null;
 setInterval(
     (context )=>{
         game.play(context);
