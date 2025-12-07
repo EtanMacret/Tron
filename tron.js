@@ -9,6 +9,7 @@ const scale = 10;
 
 class Player{
     //#region Player.Property
+    #name;
     #x;
     #y;
     #direction;
@@ -21,12 +22,15 @@ class Player{
     #dead
     //#endregion Player.Property
 
+    //#region Player.constructor
     /**
      * 
+     * @param {string} name 
      * @param {number} x 
      * @param {number} y 
      */
-    constructor(x, y){
+    constructor(x, y, name = 'Player'){
+        this.#name = name
         this.#x = x;
         this.#y = y;
         this.#direction = "Right"
@@ -38,6 +42,7 @@ class Player{
         this.#color = "blue"
         this.#dead = false;
     }
+    //#endregion Player.constructor
 
     //#region Player.Method
     change_direction(direction){
@@ -137,6 +142,7 @@ class Player{
 
     get x() { return this.#x }
     get y() { return this.#y }
+    get name() { return this.#name }
     get key_up(){ return this.#key_up }
     get key_down(){ return this.#key_down }
     get key_left(){ return this.#key_left }
@@ -167,8 +173,13 @@ class Game{
     #height;
     #is_pause;
     #key_stop;
+    #player1_x_origine;
+    #player1_y_origine;
+    #player2_x_origine;
+    #player2_y_origine;
     //#endregion
 
+    //#region Game.constructor
     /**
      * 
      * @param {number} w 
@@ -179,14 +190,8 @@ class Game{
     constructor(w, h, p1, p2){
         this.#width = w;
         this.#height = h;
-        this.#map = new Array();
-        for(let i = 0; i<this.#height; i++){
-            this.#map.push(new Array());
-            for(let j=0; j<this.#width; j++) this.#map[i].push(0);
-        }
         this.#player1 = p1;
         this.#player2 = p2;
-        this.#player1.color = 'blue';
         this.#player2.color = 'red';
         this.#is_pause = true;
         this.#key_stop = 'Space';
@@ -197,16 +202,34 @@ class Game{
             'key_right' : 'Semicolon',
             'key_jump' : 'KeyL'
         });
+        //save of the origine point of the player
+        this.#player1_x_origine = this.#player1.x;
+        this.#player1_y_origine = this.#player1.y;
+        this.#player2_x_origine = this.#player2.x;
+        this.#player2_y_origine = this.#player2.y;
+        //initialize the map
+        this.#initialize_map()
+    }
+    //#endregion Game.constructor
+
+    //#region Game.Method
+
+    #initialize_map(){
+        //inititialise map
+        this.#map = new Array();
+        for(let i = 0; i<this.#height; i++){
+            this.#map.push(new Array());
+            for(let j=0; j<this.#width; j++) this.#map[i].push(0);
+        }
         this.#map[this.#player1.y][this.#player1.x] = 1;
         this.#map[this.#player2.y][this.#player2.x] = 2;
     }
 
-    //#region Game.Method
     /**
      * 
      * @param {CanvasRenderingContext2D} context 
      */
-    play(context){;
+    play(context){
         if(!this.#is_pause){
             this.draw_line(context, this.#player1);
             this.draw_line(context, this.#player2);
@@ -245,6 +268,15 @@ class Game{
             context.closePath();
         }
     }
+
+    reset(){
+        this.#player1.x = this.#player1_x_origine;
+        this.#player1.y = this.#player1_y_origine;
+        this.#player2.x = this.#player2_x_origine;
+        this.#player2.y = this.#player2_y_origine;
+        this.#initialize_map()
+    }
+
     //#endregion
 
     //#region Game.GetterSetter
@@ -276,7 +308,12 @@ class Game{
 
 
 //#region Initialisation Jeu
-let game = new Game(80, 59, new Player(1, 28), new Player(1, 30));
+let game = new Game(80, 59, new Player(1, 28, 'Player 1'), new Player(1, 30, 'Player 2'));
+let game_loop;
+const SESSION_STATE = {
+    CONTINU: true,
+    START: false
+}
 //#endregion
 
 //#region Initialisation Affichage
@@ -284,57 +321,86 @@ let divGame = document.getElementsByClassName("game")[0];
 divGame.width = game.width * scale;
 divGame.height = game.height * scale;
 let canvas = divGame.getElementsByTagName("canvas")[0];
+let ctx = canvas.getContext("2d");
 let menu = divGame.getElementsByClassName("menu")[0];
-let game_over = divGame.getElementsByClassName("menu")[0];
-let btnVersus = menu.getElementsByTagName("button")[0];
-let btnOption = menu.getElementsByTagName("button")[1];
+let controls = divGame.getElementsByClassName("controls")[0];
+let game_over = divGame.getElementsByClassName("game_over")[0];
+let btnVersus = document.getElementById("Versus");
+let btnContinue = document.getElementById("Continu");
+let btnOption = document.getElementById("Option");
 canvas.width = game.width * scale;
 canvas.height = game.height * scale;
 menu.width = game.width * scale;
 menu.height = game.height * scale;
 game_over.width = game.width * scale;
 game_over.height = game.height * scale;
-game_over.classList.add('hidden');
 
-function showMenu() {
-    menu.hidden = false;
+let player1_Up = document.getElementById("p1Up");
+let player1_Down = document.getElementById("p1Down");
+let player1_Left = document.getElementById("p1Left");
+let player1_Right = document.getElementById("p1Rigth");
+let player1_Jump = document.getElementById("p1Jump");
+player1_Up.value = "Z";
+player1_Up.code = game.player1.key_up;
+player1_Down.value = "X";
+player1_Down.code = game.player1.key_down;
+player1_Left.value = "Q";
+player1_Left.code = game.player1.key_left;
+player1_Right.value = "D";
+player1_Right.code = game.player1.key_right;
+player1_Jump.value = "S";
+player1_Jump.code = game.player1.key_jump;
+
+let player2_Up = document.getElementById("p2Up");
+let player2_Down = document.getElementById("p2Down");
+let player2_Left = document.getElementById("p2Left");
+let player2_Right = document.getElementById("p2Rigth");
+let player2_Jump = document.getElementById("p2Jump");
+
+player2_Up.value = "O";
+player2_Up.textContent = game.player2.key_up;
+player2_Down.value = ";";
+player2_Down.textContent = game.player2.key_down;
+player2_Left.value = "K";
+player2_Left.textContent = game.player2.key_left;
+player2_Right.value = "M";
+player2_Right.textContent = game.player2.key_right;
+player2_Jump.value = "L";
+player2_Jump.textContent = game.player2.key_jump;
+
+//#endregion
+
+//#region Global function
+function showMenu(state = SESSION_STATE.START) {
+    if (state){
+        btnContinue.classList.remove("hidden");
+        if ( !("hidden" in btnVersus.classList )) btnVersus.classList.add('hidden');
+    }else {
+        btnVersus.classList.remove("hidden");
+        if ( !("hidden" in btnContinue.classList )) btnContinue.classList.add('hidden');
+    }
+    menu.classList.remove("hidden");
     canvas.style.filter = "blur(5px)";
 }
 
 // Fonction pour masquer le menu
 function hideMenu() {
-    menu.hidden = true;
+
+    menu.classList.add("hidden");
     canvas.style.filter = "none";
 }
 
-// Bouton Versus : Lance la partie
-btnVersus.addEventListener("click", () => {
-    console.log("Versus clicked");
-    hideMenu();
-    resetGame();
-    game.start();
-});
-
-// Bouton Option : Afficher les options (à développer)
-btnOption.addEventListener("click", () => {
-    console.log("Option clicked");
-    // À compléter selon vos besoins
-    alert("Options - À venir");
-});
-
 // Fonction pour réinitialiser le jeu
-function resetGame() {
+/**
+ * 
+ * @param {CanvasRenderingContext2D} ctx 
+ */
+function resetGame(ctx) {
     // Efface le canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+    ctx.reset();
+    initialize_context_canvas(ctx);
     // Réinitialise le jeu
-    game = new Game(80, 59, new Player(1, 28), new Player(78, 28));
-    
-    // Réinitialise le contexte
-    ctx.moveTo(game.player1.x * scale, game.player1.y * scale);
-    ctx.strokeStyle = 'blue';
-    ctx.lineWidth = scale;
-    ctx.lineCap = 'round';
+    game.reset();
 }
 
 // Fonction pour afficher le gagnant et revenir au menu
@@ -354,18 +420,41 @@ function gameOver(winner) {
     }, 500);
 }
 //*/
+/**
+ * 
+ * @param {CanvasRenderingContext2D} ctx 
+ * @returns 
+ */
+function game_loop_start(ctx){
+    return setInterval(
+        (context )=>{
+            game.play(context);
+            if(
+                game.player1.isDead() ||
+                game.player2.isDead()
+            ){
+                game.stop;
+                game_over.textContent = `${game.player1.isDead()? game.player2.name: game.player1.name} a gagné!`;
+                game_over.classList.remove('hidden');
+            }
+        },
+        450,
+        ctx
+    );
+}
 //#endregion
 
-//#region Initialisation Contect Canves
-let ctx = canvas.getContext("2d");
-ctx.moveTo(game.player1.x * scale, game.player1.y * scale);
-ctx.strokeStyle = 'blue';
-ctx.lineWidth = scale;
-ctx.lineCap = 'round';
+//#region Initialisation Context Canves
+function initialize_context_canvas(ctx){
+    ctx.moveTo(game.player1.x * scale, game.player1.y * scale);
+    ctx.lineWidth = scale;
+    ctx.lineCap = 'round';
+}
 //#endregion
 
 
 //#region TEST
+/*
 game.start();
 let gameInterval = null;
 setInterval(
@@ -385,15 +474,56 @@ setInterval(
 );
 
 setTimeout( ()=>{console.log(game.toString())}, 1_000);
+*/
 //#endregion
 
 //#region EventListener
+
+
+// Bouton Versus : Lance la partie
+btnVersus.addEventListener("click", () => {
+    console.log("Versus clicked");
+    hideMenu();
+    resetGame(ctx);
+    game.start();
+    game_loop = game_loop_start(ctx);
+});
+
+// Bouton Continue : Continue la partie
+btnContinue.addEventListener("click", () => {
+    console.log("Continue clicked");
+    hideMenu();
+    game.start();
+    game_loop = game_loop_start(ctx);
+});
+
+controls.getElementsByTagName("form")[0].submit = (event) => {
+    let key_p1 = {};
+    let key_p2 = {};
+    controls.getElementsByTagName("input").forEach((key, i) => {
+        if (i < 5) a;
+    });
+    event.preventDefault    ();
+    return false;
+}
+
+// Bouton Option : Afficher les options (à développer)
+btnOption.addEventListener("click", () => {
+    console.log("Option clicked");
+    // À compléter selon vos besoins
+    if ( !("hidden" in menu.classList )) menu.classList.add('hidden');
+    controls.classList.remove("hidden");
+});
+
 document.addEventListener("keypress", event => {
+    console.log(event);
     console.log(event.code);
     //Mouvement
     switch(event.code){
         case game.key_stop:
             game.stop();
+            clearInterval(game_loop);
+            showMenu(SESSION_STATE.CONTINU);
             console.log("game stoped");
             break;
         case game.player1.key_up:

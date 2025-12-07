@@ -12,10 +12,42 @@
     <div class="game">
         <canvas></canvas>
         <!-- menu du jeu-->
-        <div class="menu" hidden>
+        <div class="menu">
             <img src="image/logo_TRON.png" alt="logo TRON"><br>
-            <button>Versus</button><br>
-            <button>Option</button><br>
+            <button id="Versus">Versus</button><br>
+            <button id="Continu" class="hidden">Continu</button>
+            <button id="Option">Option</button><br>
+        </div>
+        <div class="controls hidden">
+            <form>
+                <div class="player1">
+                    <span> Player 1: </span><br>
+                    <label for="p1Up">Up :</label>
+                    <input type="text" size="1" name="key_up" id="p1Up"/><br>
+                    <label for="p1Down">Down :</label>
+                    <input type="text" size="1" name="key_down" id="p1Down"/><br>
+                    <label for="p1Left">Left :</label>
+                    <input type="text" size="1" name="key_left" id="p1Left"/><br>
+                    <label for="p1Rigth">Rigth :</label>
+                    <input type="text" size="1" name="key_rigth" id="p1Rigth"/><br>
+                    <label for="p1Jump">Jump :</label>
+                    <input type="text" size="1" name="key_jump" id="p1Jump"/><br>
+                </div>
+                <div class="player2">
+                    <span>Player 2:</span><br>
+                    <label for="p2Up">Up :</label>
+                    <input type="text" size="1" name="key_up" id="p2Up"/><br>
+                    <label for="p2Down">Down :</label>
+                    <input type="text" size="1" name="key_down" id="p2Down"/><br>
+                    <label for="p2Left">Left :</label>
+                    <input type="text" size="1" name="key_left" id="p2Left"/><br>
+                    <label for="p2Rigth">Rigth :</label>
+                    <input type="text" size="1" name="key_rigth" id="p2Rigth"/><br>
+                    <label for="p2Jump">Jump :</label>
+                    <input type="text" size="1" name="key_jump" id="p2Jump"/><br>
+                    <button type="submit">Save</button>
+                </div>
+            </form>
         </div>
         <div class="game_over"></div>
     </div>

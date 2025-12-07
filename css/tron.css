@@ -144,7 +144,7 @@ canvas {
 }
 
 /* Style pour le message de game over */
-.menu.game-over {
+.game_over {
     background: rgba(0, 0, 0, 0.98);
     border-color: #ff0050;
     box-shadow: 
@@ -152,8 +152,8 @@ canvas {
         inset 0 0 20px rgba(255, 0, 80, 0.1);
 }
 
-.menu.game-over h1,
-.menu.game-over .winner-text {
+.game_over h1,
+.game_over .winner-text {
     color: #ff0050;
     text-shadow: 
         0 0 10px #ff0050,
