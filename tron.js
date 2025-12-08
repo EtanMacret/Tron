@@ -2,23 +2,50 @@ console.log("Tron.js inserer");
 
 const scale = 10;
 
+
+//#region LIst_key
+/**
+ * 
+ */
+class List_Key{
+    key_up;
+    key_down;
+    key_left;
+    key_right;
+    key_jump;
+
+    /**
+     * 
+     * @param {string} up 
+     * @param {string} down 
+     * @param {string} left 
+     * @param {string} right 
+     * @param {string} jump 
+     */
+    constructor(up, down, left, right, jump){
+        this.key_up = up;
+        this.key_down = down;
+        this.key_left = left;
+        this.key_right = right;
+        this.key_jump = jump;
+    }
+}
+
+
+//#endregion LIst_key
+
 //#region Player
 /**
  * 
  */
-
 class Player{
     //#region Player.Property
     #name;
     #x;
     #y;
     #direction;
-    #key_up;
-    #key_down;
-    #key_left;
-    #key_right;
-    #key_jump;
-    #color
+    #key_list;
+    #color;
     #dead
     //#endregion Player.Property
 
@@ -28,18 +55,15 @@ class Player{
      * @param {string} name 
      * @param {number} x 
      * @param {number} y 
+     * @param {List_Key} lst_key
      */
-    constructor(x, y, name = 'Player'){
+    constructor(x, y, name = 'Player', lst_key = new List_Key('KeyW', 'KeyX','KeyA','KeyD','KeyS')){
         this.#name = name
         this.#x = x;
         this.#y = y;
         this.#direction = "Right"
-        this.#key_up = 'KeyW';
-        this.#key_down = 'KeyX';
-        this.#key_left = 'KeyA';
-        this.#key_right = 'KeyD';
-        this.#key_jump = 'KeyS';
         this.#color = "blue"
+        this.#key_list = lst_key;
         this.#dead = false;
     }
     //#endregion Player.constructor
@@ -118,14 +142,10 @@ class Player{
 
     /**
      * 
-     * @param {Object} obj 
+     * @param {List_Key} obj 
      */
     change_controle(obj){
-        this.#key_up = obj.key_up;
-        this.#key_down = obj.key_down;
-        this.#key_left = obj.key_left;
-        this.#key_right = obj.key_right;
-        this.#key_jump = obj.key_jump;
+        this.#key_list = obj
     }
 
     //#endregion
@@ -133,21 +153,12 @@ class Player{
     //#region Player.GetterSetter
     set x(x){ this.#x = x }
     set y(y){ this.#y = y }
-    set key_up(code){}
-    set key_down(code){}
-    set key_left(code){}
-    set key_right(code){}
-    set key_jump(code){}
     set color(color){ this.#color = color }
 
     get x() { return this.#x }
     get y() { return this.#y }
     get name() { return this.#name }
-    get key_up(){ return this.#key_up }
-    get key_down(){ return this.#key_down }
-    get key_left(){ return this.#key_left }
-    get key_right(){ return this.#key_right }
-    get key_jump(){ return this.#key_jump }
+    get key_list() { return this.#key_list }
     get color() { return this.#color }
     get direction() { return this.#direction }
     //#endregion
@@ -195,13 +206,13 @@ class Game{
         this.#player2.color = 'red';
         this.#is_pause = true;
         this.#key_stop = 'Space';
-        this.#player2.change_controle({
-            'key_up' : 'KeyO',
-            'key_down' : 'Comma',
-            'key_left' : 'KeyK',
-            'key_right' : 'Semicolon',
-            'key_jump' : 'KeyL'
-        });
+        this.#player2.change_controle(new List_Key(
+            'KeyO',
+            'Comma',
+            'KeyK',
+            'Semicolon',
+            'KeyL')
+        );
         //save of the origine point of the player
         this.#player1_x_origine = this.#player1.x;
         this.#player1_y_origine = this.#player1.y;
@@ -286,6 +297,7 @@ class Game{
     get player2() { return this.#player2; }
     get key_stop() { return this.#key_stop; }
     get map() { return this.#map; }
+    get is_pause(){ return this.#is_pause; }
     //#endregion
 
     toString(){
@@ -341,15 +353,15 @@ let player1_Left = document.getElementById("p1Left");
 let player1_Right = document.getElementById("p1Rigth");
 let player1_Jump = document.getElementById("p1Jump");
 player1_Up.value = "Z";
-player1_Up.code = game.player1.key_up;
+player1_Up.setAttribute("code", game.player1.key_list.key_up);
 player1_Down.value = "X";
-player1_Down.code = game.player1.key_down;
+player1_Down.setAttribute("code", game.player1.key_list.key_down);
 player1_Left.value = "Q";
-player1_Left.code = game.player1.key_left;
+player1_Left.setAttribute("code", game.player1.key_list.key_left);
 player1_Right.value = "D";
-player1_Right.code = game.player1.key_right;
+player1_Right.setAttribute("code", game.player1.key_list.key_right);
 player1_Jump.value = "S";
-player1_Jump.code = game.player1.key_jump;
+player1_Jump.setAttribute("code", game.player1.key_list.key_jump);
 
 let player2_Up = document.getElementById("p2Up");
 let player2_Down = document.getElementById("p2Down");
@@ -358,16 +370,15 @@ let player2_Right = document.getElementById("p2Rigth");
 let player2_Jump = document.getElementById("p2Jump");
 
 player2_Up.value = "O";
-player2_Up.textContent = game.player2.key_up;
+player2_Up.setAttribute("code", game.player2.key_list.key_up);
 player2_Down.value = ";";
-player2_Down.textContent = game.player2.key_down;
+player2_Down.setAttribute("code", game.player2.key_list.key_down);
 player2_Left.value = "K";
-player2_Left.textContent = game.player2.key_left;
+player2_Left.setAttribute("code", game.player2.key_list.key_left);
 player2_Right.value = "M";
-player2_Right.textContent = game.player2.key_right;
+player2_Right.setAttribute("code", game.player2.key_list.key_right);
 player2_Jump.value = "L";
-player2_Jump.textContent = game.player2.key_jump;
-
+player2_Jump.setAttribute("code", game.player2.key_list.key_jump);
 //#endregion
 
 //#region Global function
@@ -388,6 +399,16 @@ function hideMenu() {
 
     menu.classList.add("hidden");
     canvas.style.filter = "none";
+}
+
+function showOption(){
+    if ( !("hidden" in menu.classList )) menu.classList.add('hidden');
+    controls.classList.remove("hidden");
+}
+
+function hideOption(){
+    if ( !("hidden" in controls.classList )) controls.classList.add("hidden");
+    menu.classList.remove('hidden');
 }
 
 // Fonction pour réinitialiser le jeu
@@ -497,66 +518,127 @@ btnContinue.addEventListener("click", () => {
     game_loop = game_loop_start(ctx);
 });
 
-controls.getElementsByTagName("form")[0].submit = (event) => {
-    let key_p1 = {};
-    let key_p2 = {};
-    controls.getElementsByTagName("input").forEach((key, i) => {
-        if (i < 5) a;
-    });
-    event.preventDefault    ();
-    return false;
-}
+player1_Up.addEventListener("keypress", (e) => {
+    player1_Up.setAttribute("code", e.code);
+    player1_Up.value = e.key;
+});
+player1_Down.addEventListener("keypress", (e) => {
+    player1_Down.setAttribute("code", e.code);
+    player1_Down.value = e.key;
+});
+player1_Left.addEventListener("keypress", (e) => {
+    player1_Left.setAttribute("code", e.code);
+    player1_Left.value = e.key;
+});
+player1_Right.addEventListener("keypress", (e) => {
+    player1_Right.code = e.code;
+    player1_Right.value = e.key;
+});
+player1_Jump.addEventListener("keypress", (e) => {
+    player1_Jump.setAttribute("code", e.code);
+    player1_Jump.value = e.key;
+});
+
+player2_Up.addEventListener("keypress", (e) => {
+    player2_Up.setAttribute("code", e.code);
+    player2_Up.value = e.key;
+});
+player2_Down.addEventListener("keypress", (e) => {
+    player2_Down.setAttribute("code", e.code);
+    player2_Down.value = e.key;
+});
+player2_Left.addEventListener("keypress", (e) => {
+    player2_Left.setAttribute("code", e.code);
+    player2_Left.value = e.key;
+});
+player2_Right.addEventListener("keypress", (e) => {
+    player2_Right.setAttribute("code", e.code);
+    player2_Right.value = e.key;
+});
+player2_Jump.addEventListener("keypress", (e) => {
+    player2_Jump.setAttribute("code", e.code);
+    player2_Jump.value = e.key;
+});
+
+controls.getElementsByTagName("form")[0].addEventListener("submit", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    let key_p1 = new List_Key(
+        player1_Up.getAttribute("code"),
+        player1_Down.getAttribute("code"),
+        player1_Left.getAttribute("code"),
+        player1_Right.getAttribute("code"),
+        player1_Jump.getAttribute("code")
+    );
+    let key_p2 = new List_Key(
+        player2_Up.getAttribute("code"),
+        player2_Down.getAttribute("code"),
+        player2_Left.getAttribute("code"),
+        player2_Right.getAttribute("code"),
+        player2_Jump.getAttribute("code")
+    );
+    console.log(key_p1);
+    
+    
+    game.player1.change_controle(key_p1);
+    game.player2.change_controle(key_p2);
+
+    hideOption();
+
+   return false;    
+});
 
 // Bouton Option : Afficher les options (à développer)
 btnOption.addEventListener("click", () => {
     console.log("Option clicked");
-    // À compléter selon vos besoins
-    if ( !("hidden" in menu.classList )) menu.classList.add('hidden');
-    controls.classList.remove("hidden");
+    showOption();
 });
 
 document.addEventListener("keypress", event => {
     console.log(event);
     console.log(event.code);
     //Mouvement
-    switch(event.code){
-        case game.key_stop:
-            game.stop();
-            clearInterval(game_loop);
-            showMenu(SESSION_STATE.CONTINU);
-            console.log("game stoped");
-            break;
-        case game.player1.key_up:
-            if (game.player1.direction != "Down") game.player1.change_direction('Up');
-            break;
-        case game.player1.key_down:
-            if (game.player1.direction != "Up") game.player1.change_direction('Down');
-            break;
-        case game.player1.key_left:
-            if (game.player1.direction != "Right") game.player1.change_direction('Left');
-            break;
-        case game.player1.key_right:    
-            if (game.player1.direction != "Left") game.player1.change_direction('Right');
-            break;
-        case game.player1.key_jump:
-            game.player1.jump(game);
-            break;
-        case game.player2.key_up:
-            if (game.player2.direction != "Down") game.player2.change_direction('Up');
-            break;
-        case game.player2.key_down:
-            if (game.player2.direction != "Up") game.player2.change_direction('Down');
-            break;
-        case game.player2.key_left:
-            if (game.player2.direction != "Right") game.player2.change_direction('Left');
-            break;
-        case game.player2.key_right:
-            if (game.player2.direction != "Left") game.player2.change_direction('Right');
-            break;
-        case game.player2.key_jump:
-            game.player2.jump(game);
-            break;
-        default: break;
-    }
+    if (!game.is_pause){
+        switch(event.code){
+            case game.key_stop:
+                game.stop();
+                clearInterval(game_loop);
+                showMenu(SESSION_STATE.CONTINU);
+                console.log("game stoped");
+                break;
+            case game.player1.key_list.key_up:
+                if (game.player1.direction != "Down") game.player1.change_direction('Up');
+                break;
+            case game.player1.key_list.key_down:
+                if (game.player1.direction != "Up") game.player1.change_direction('Down');
+                break;
+            case game.player1.key_list.key_left:
+                if (game.player1.direction != "Right") game.player1.change_direction('Left');
+                break;
+            case game.player1.key_list.key_right:    
+                if (game.player1.direction != "Left") game.player1.change_direction('Right');
+                break;
+            case game.player1.key_list.key_jump:
+                game.player1.jump(game);
+                break;
+            case game.player2.key_list.key_up:
+                if (game.player2.direction != "Down") game.player2.change_direction('Up');
+                break;
+            case game.player2.key_list.key_down:
+                if (game.player2.direction != "Up") game.player2.change_direction('Down');
+                break;
+            case game.player2.key_list.key_left:
+                if (game.player2.direction != "Right") game.player2.change_direction('Left');
+                break;
+            case game.player2.key_list.key_right:
+                if (game.player2.direction != "Left") game.player2.change_direction('Right');
+                break;
+            case game.player2.key_list.key_jump:
+                game.player2.jump(game);
+                break;
+            default: break;
+        }
+    }    
 });
 //#endregion
