@@ -329,28 +329,39 @@ const SESSION_STATE = {
 //#endregion
 
 //#region Initialisation Affichage
+//#region canvas
 let divGame = document.getElementsByClassName("game")[0];
 divGame.width = game.width * scale;
 divGame.height = game.height * scale;
 let canvas = divGame.getElementsByTagName("canvas")[0];
 let ctx = canvas.getContext("2d");
+//#endregion canvas
+
+//#region display
 let menu = divGame.getElementsByClassName("menu")[0];
 let controls = divGame.getElementsByClassName("controls")[0];
 let game_over = divGame.getElementsByClassName("game_over")[0];
-let btnVersus = document.getElementById("Versus");
-let btnContinue = document.getElementById("Continu");
-let btnOption = document.getElementById("Option");
 canvas.width = game.width * scale;
 canvas.height = game.height * scale;
 menu.width = game.width * scale;
 menu.height = game.height * scale;
 game_over.width = game.width * scale;
 game_over.height = game.height * scale;
+let winner = document.getElementById("winner"); //winner dispaly
+//#endregion display
 
+//#region button
+let btnVersus = document.getElementById("Versus");
+let btnContinue = document.getElementById("Continu");
+let btnOption = document.getElementById("Option");
+let btnHome = document.getElementById("home");
+//#endregion button
+
+//#region controle
 let player1_Up = document.getElementById("p1Up");
 let player1_Down = document.getElementById("p1Down");
 let player1_Left = document.getElementById("p1Left");
-let player1_Right = document.getElementById("p1Rigth");
+let player1_Right = document.getElementById("p1Right");
 let player1_Jump = document.getElementById("p1Jump");
 player1_Up.value = "Z";
 player1_Up.setAttribute("code", game.player1.key_list.key_up);
@@ -366,7 +377,7 @@ player1_Jump.setAttribute("code", game.player1.key_list.key_jump);
 let player2_Up = document.getElementById("p2Up");
 let player2_Down = document.getElementById("p2Down");
 let player2_Left = document.getElementById("p2Left");
-let player2_Right = document.getElementById("p2Rigth");
+let player2_Right = document.getElementById("p2Right");
 let player2_Jump = document.getElementById("p2Jump");
 
 player2_Up.value = "O";
@@ -379,6 +390,13 @@ player2_Right.value = "M";
 player2_Right.setAttribute("code", game.player2.key_list.key_right);
 player2_Jump.value = "L";
 player2_Jump.setAttribute("code", game.player2.key_list.key_jump);
+
+let list_controle = {};
+Array.from(controls.getElementsByTagName("input")).forEach( (input) => { list_controle[input.id] = input.getAttribute("code") });
+
+
+
+//#endregion controle
 //#endregion
 
 //#region Global function
@@ -394,10 +412,10 @@ function showMenu(state = SESSION_STATE.START) {
     canvas.style.filter = "blur(5px)";
 }
 
+//#region function display
 // Fonction pour masquer le menu
 function hideMenu() {
-
-    menu.classList.add("hidden");
+if ( !("hidden" in menu.classList) )menu.classList.add("hidden");
     canvas.style.filter = "none";
 }
 
@@ -411,7 +429,19 @@ function hideOption(){
     menu.classList.remove('hidden');
 }
 
-// Fonction pour réinitialiser le jeu
+function showGameOver(){
+    clearInterval(game_loop);
+    winner.textContent = `${game.player1.isDead()? game.player2.name: game.player1.name} a gagné!`;
+    game_over.classList.remove('hidden');
+}
+
+function hideGameOver(){
+    if ( !("hidden" in game_over.classList) )game_over.classList.add('hidden');
+    showMenu();
+}
+//#endregion function display
+
+//#region function resetGame
 /**
  * 
  * @param {CanvasRenderingContext2D} ctx 
@@ -423,7 +453,9 @@ function resetGame(ctx) {
     // Réinitialise le jeu
     game.reset();
 }
+//#endregion function resetGame
 
+/* Useless
 // Fonction pour afficher le gagnant et revenir au menu
 function gameOver(winner) {
     game.stop();
@@ -441,6 +473,7 @@ function gameOver(winner) {
     }, 500);
 }
 //*/
+//#region function game_loop_start
 /**
  * 
  * @param {CanvasRenderingContext2D} ctx 
@@ -454,15 +487,16 @@ function game_loop_start(ctx){
                 game.player1.isDead() ||
                 game.player2.isDead()
             ){
-                game.stop;
-                game_over.textContent = `${game.player1.isDead()? game.player2.name: game.player1.name} a gagné!`;
-                game_over.classList.remove('hidden');
+                game.stop();
+                showGameOver();
             }
         },
         450,
         ctx
     );
 }
+//#endregion function game_loop_start
+
 //#endregion
 
 //#region Initialisation Context Canves
@@ -518,48 +552,136 @@ btnContinue.addEventListener("click", () => {
     game_loop = game_loop_start(ctx);
 });
 
-player1_Up.addEventListener("keypress", (e) => {
-    player1_Up.setAttribute("code", e.code);
-    player1_Up.value = e.key;
-});
-player1_Down.addEventListener("keypress", (e) => {
-    player1_Down.setAttribute("code", e.code);
-    player1_Down.value = e.key;
-});
-player1_Left.addEventListener("keypress", (e) => {
-    player1_Left.setAttribute("code", e.code);
-    player1_Left.value = e.key;
-});
-player1_Right.addEventListener("keypress", (e) => {
-    player1_Right.code = e.code;
-    player1_Right.value = e.key;
-});
-player1_Jump.addEventListener("keypress", (e) => {
-    player1_Jump.setAttribute("code", e.code);
-    player1_Jump.value = e.key;
+btnHome.addEventListener("click", ()=> {
+    showMenu();
+    hideGameOver();
 });
 
-player2_Up.addEventListener("keypress", (e) => {
-    player2_Up.setAttribute("code", e.code);
-    player2_Up.value = e.key;
+//#region event listener control
+player1_Up.addEventListener("keydown", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player1_Up.setAttribute("code", e.code);
+        player1_Up.value = "";
+        list_controle[e.target.id] = e.code
+    }
 });
-player2_Down.addEventListener("keypress", (e) => {
-    player2_Down.setAttribute("code", e.code);
-    player2_Down.value = e.key;
+player1_Up.addEventListener("keyup", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player1_Up.value = e.key;
+    }
 });
-player2_Left.addEventListener("keypress", (e) => {
-    player2_Left.setAttribute("code", e.code);
-    player2_Left.value = e.key;
+player1_Down.addEventListener("keydown", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player1_Down.setAttribute("code", e.code);
+        player1_Down.value = "";
+        list_controle[e.target.id] = e.code
+    }
 });
-player2_Right.addEventListener("keypress", (e) => {
-    player2_Right.setAttribute("code", e.code);
-    player2_Right.value = e.key;
+player1_Down.addEventListener("keyup", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player1_Down.value = e.key;
+    }
 });
-player2_Jump.addEventListener("keypress", (e) => {
-    player2_Jump.setAttribute("code", e.code);
-    player2_Jump.value = e.key;
+player1_Left.addEventListener("keydown", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player1_Left.setAttribute("code", e.code);
+        player1_Left.value = "";
+        list_controle[e.target.id] = e.code
+    }
+});
+player1_Left.addEventListener("keyup", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player1_Left.value = e.key;
+    }
+});
+player1_Right.addEventListener("keydown", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player1_Right.setAttribute("code", e.code);
+        player1_Right.value = "";
+        list_controle[e.target.id] = e.code
+    }
+});
+player1_Right.addEventListener("keyup", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player1_Right.value = e.key;
+    }
+});
+player1_Jump.addEventListener("keydown", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player1_Jump.setAttribute("code", e.code);
+        player1_Jump.value = "";
+        list_controle[e.target.id] = e.code
+    }
+});
+player1_Jump.addEventListener("keyup", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player1_Jump.value = e.key;
+    }
 });
 
+player2_Up.addEventListener("keydown", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player2_Up.setAttribute("code", e.code);
+        player2_Up.value = "";
+        list_controle[e.target.id] = e.code
+    }
+});
+player2_Up.addEventListener("keyup", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player2_Up.value = e.key;
+    }
+});
+player2_Down.addEventListener("keydown", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player2_Down.setAttribute("code", e.code);
+        player2_Down.value = "";
+        list_controle[e.target.id] = e.code
+    }
+});
+player2_Down.addEventListener("keyup", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player2_Down.value = e.key;
+    }
+});
+player2_Left.addEventListener("keydown", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player2_Left.setAttribute("code", e.code);
+        player2_Left.value = "";
+        list_controle[e.target.id] = e.code
+    }
+});
+player2_Left.addEventListener("keyup", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player2_Left.value = e.key;
+    }
+});
+player2_Right.addEventListener("keydown", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player2_Right.setAttribute("code", e.code);
+        player2_Right.value = "";
+        list_controle[e.target.id] = e.code
+    }
+});
+player2_Right.addEventListener("keyup", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player2_Right.value = e.key;
+    }
+});
+player2_Jump.addEventListener("keydown", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player2_Jump.setAttribute("code", e.code);
+        player2_Jump.value = "";
+        list_controle[e.target.id] = e.code
+    }
+});
+player2_Jump.addEventListener("keyup", (e) => {
+    if(Object.values(list_controle).indexOf(e.code) == -1){
+        player2_Jump.value = e.key;
+    }
+});
+//#endregion event listener control
+
+//#region event listener submit controle
 controls.getElementsByTagName("form")[0].addEventListener("submit", (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -588,6 +710,7 @@ controls.getElementsByTagName("form")[0].addEventListener("submit", (event) => {
 
    return false;    
 });
+//#endregion event listener submit controle
 
 // Bouton Option : Afficher les options (à développer)
 btnOption.addEventListener("click", () => {
@@ -595,9 +718,8 @@ btnOption.addEventListener("click", () => {
     showOption();
 });
 
+//#region event listener key press gestion
 document.addEventListener("keypress", event => {
-    console.log(event);
-    console.log(event.code);
     //Mouvement
     if (!game.is_pause){
         switch(event.code){
@@ -641,4 +763,5 @@ document.addEventListener("keypress", event => {
         }
     }    
 });
+//#endregion event listener key press gestion
 //#endregion
