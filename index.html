@@ -12,13 +12,13 @@
     <div class="game">
         <canvas></canvas>
         <!-- menu du jeu-->
-        <div class="menu">
+        <div class="menu" id="menu">
             <img src="image/logo_TRON.png" alt="logo TRON"><br>
             <button id="Versus">Versus</button><br>
             <button id="Continu" class="hidden">Continu</button>
             <button id="Option">Option</button><br>
         </div>
-        <div class="controls hidden">
+        <div class="menu controls hidden" id="controls">
             <form>
                 <div class="player1">
                     <span> Player 1: </span><br>
@@ -28,8 +28,8 @@
                     <input type="text" size="1" name="key_down" id="p1Down"/><br>
                     <label for="p1Left">Left :</label>
                     <input type="text" size="1" name="key_left" id="p1Left"/><br>
-                    <label for="p1Rigth">Rigth :</label>
-                    <input type="text" size="1" name="key_rigth" id="p1Rigth"/><br>
+                    <label for="p1Right">Right :</label>
+                    <input type="text" size="1" name="key_Right" id="p1Right"/><br>
                     <label for="p1Jump">Jump :</label>
                     <input type="text" size="1" name="key_jump" id="p1Jump"/><br>
                 </div>
@@ -41,15 +41,15 @@
                     <input type="text" size="1" name="key_down" id="p2Down"/><br>
                     <label for="p2Left">Left :</label>
                     <input type="text" size="1" name="key_left" id="p2Left"/><br>
-                    <label for="p2Rigth">Rigth :</label>
-                    <input type="text" size="1" name="key_rigth" id="p2Rigth"/><br>
+                    <label for="p2Right">Right :</label>
+                    <input type="text" size="1" name="key_Right" id="p2Right"/><br>
                     <label for="p2Jump">Jump :</label>
                     <input type="text" size="1" name="key_jump" id="p2Jump"/><br>
                     <button type="submit">Save</button>
                 </div>
             </form>
         </div>
-        <div class="game_over hidden">
+        <div class="game_over menu hidden" id="game_over">
             <p><em id="winner"></em> has win!</p><br>
             <button id="home">Home</button>
         </div>

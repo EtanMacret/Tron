@@ -1,7 +1,12 @@
 console.log("Tron.js inserer");
 
+//#region constant
 const scale = 10;
-
+const SESSION_STATE = {
+    CONTINU: true,
+    START: false
+}
+//#endregion constant
 
 //#region LIst_key
 /**
@@ -96,8 +101,10 @@ class Player{
     die() {
         console.log(`${this.#color} died`);
         
-        this.#dead = true
+        this.#dead = true;
     }
+
+    revive() { this.#dead = false; }
 
     next(){
         let next_x = this.#x;
@@ -135,7 +142,7 @@ class Player{
             this.#y +2 < game.height &&
             game.map[next_y][next_x] == 0
         ){
-            console.log(`${this.#color} jump`);
+            console.log(`${this.#name} jump`);
             this.move();
         }
     }
@@ -285,6 +292,10 @@ class Game{
         this.#player1.y = this.#player1_y_origine;
         this.#player2.x = this.#player2_x_origine;
         this.#player2.y = this.#player2_y_origine;
+        this.#player1.change_direction("Right");
+        this.#player2.change_direction("Right");
+        this.#player1.revive();
+        this.#player2.revive();
         this.#initialize_map()
     }
 
@@ -322,10 +333,6 @@ class Game{
 //#region Initialisation Jeu
 let game = new Game(80, 59, new Player(1, 28, 'Player 1'), new Player(1, 30, 'Player 2'));
 let game_loop;
-const SESSION_STATE = {
-    CONTINU: true,
-    START: false
-}
 //#endregion
 
 //#region Initialisation Affichage
@@ -338,15 +345,11 @@ let ctx = canvas.getContext("2d");
 //#endregion canvas
 
 //#region display
-let menu = divGame.getElementsByClassName("menu")[0];
-let controls = divGame.getElementsByClassName("controls")[0];
-let game_over = divGame.getElementsByClassName("game_over")[0];
+let menu = document.getElementById("menu");
+let controls = document.getElementById("controls");
+let game_over = document.getElementById("game_over");
 canvas.width = game.width * scale;
 canvas.height = game.height * scale;
-menu.width = game.width * scale;
-menu.height = game.height * scale;
-game_over.width = game.width * scale;
-game_over.height = game.height * scale;
 let winner = document.getElementById("winner"); //winner dispaly
 //#endregion display
 
@@ -557,133 +560,23 @@ btnHome.addEventListener("click", ()=> {
     hideGameOver();
 });
 
-//#region event listener control
-player1_Up.addEventListener("keydown", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player1_Up.setAttribute("code", e.code);
-        player1_Up.value = "";
-        list_controle[e.target.id] = e.code
-    }
-});
-player1_Up.addEventListener("keyup", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player1_Up.value = e.key;
-    }
-});
-player1_Down.addEventListener("keydown", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player1_Down.setAttribute("code", e.code);
-        player1_Down.value = "";
-        list_controle[e.target.id] = e.code
-    }
-});
-player1_Down.addEventListener("keyup", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player1_Down.value = e.key;
-    }
-});
-player1_Left.addEventListener("keydown", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player1_Left.setAttribute("code", e.code);
-        player1_Left.value = "";
-        list_controle[e.target.id] = e.code
-    }
-});
-player1_Left.addEventListener("keyup", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player1_Left.value = e.key;
-    }
-});
-player1_Right.addEventListener("keydown", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player1_Right.setAttribute("code", e.code);
-        player1_Right.value = "";
-        list_controle[e.target.id] = e.code
-    }
-});
-player1_Right.addEventListener("keyup", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player1_Right.value = e.key;
-    }
-});
-player1_Jump.addEventListener("keydown", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player1_Jump.setAttribute("code", e.code);
-        player1_Jump.value = "";
-        list_controle[e.target.id] = e.code
-    }
-});
-player1_Jump.addEventListener("keyup", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player1_Jump.value = e.key;
-    }
-});
+//#region event listener control    
 
-player2_Up.addEventListener("keydown", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player2_Up.setAttribute("code", e.code);
-        player2_Up.value = "";
-        list_controle[e.target.id] = e.code
-    }
-});
-player2_Up.addEventListener("keyup", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player2_Up.value = e.key;
-    }
-});
-player2_Down.addEventListener("keydown", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player2_Down.setAttribute("code", e.code);
-        player2_Down.value = "";
-        list_controle[e.target.id] = e.code
-    }
-});
-player2_Down.addEventListener("keyup", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player2_Down.value = e.key;
-    }
-});
-player2_Left.addEventListener("keydown", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player2_Left.setAttribute("code", e.code);
-        player2_Left.value = "";
-        list_controle[e.target.id] = e.code
-    }
-});
-player2_Left.addEventListener("keyup", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player2_Left.value = e.key;
-    }
-});
-player2_Right.addEventListener("keydown", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player2_Right.setAttribute("code", e.code);
-        player2_Right.value = "";
-        list_controle[e.target.id] = e.code
-    }
-});
-player2_Right.addEventListener("keyup", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player2_Right.value = e.key;
-    }
-});
-player2_Jump.addEventListener("keydown", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player2_Jump.setAttribute("code", e.code);
-        player2_Jump.value = "";
-        list_controle[e.target.id] = e.code
-    }
-});
-player2_Jump.addEventListener("keyup", (e) => {
-    if(Object.values(list_controle).indexOf(e.code) == -1){
-        player2_Jump.value = e.key;
-    }
-});
-
-Array.from(controls.getElementsByTagName("input")).forEach(input => {
-    input.addEventListener('keyup', event => {
-        event.target.style.color = 'red'
+Array.from(controls.getElementsByTagName("input")).forEach(input => {   
+    input.addEventListener('keydown', event => {
+        if(Object.values(list_controle).indexOf(event.code) == -1){
+            event.target.setAttribute("code", event.code);
+            event.target.placeholder = event.key;
+            list_controle[event.target.id] = event.code;
+        }else{
+            event.target.placeholder = event.target.value;
+        }
+        event.target.value = "";
     });
+    input.addEventListener("keyup", (event) => {
+        event.target.value = event.target.placeholder;
+    });
+
 })
 //#endregion event listener control
 
