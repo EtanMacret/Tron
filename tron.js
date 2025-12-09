@@ -679,6 +679,12 @@ player2_Jump.addEventListener("keyup", (e) => {
         player2_Jump.value = e.key;
     }
 });
+
+Array.from(controls.getElementsByTagName("input")).forEach(input => {
+    input.addEventListener('keyup', event => {
+        event.target.style.color = 'red'
+    });
+})
 //#endregion event listener control
 
 //#region event listener submit controle
