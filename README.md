@@ -6,9 +6,9 @@
 <h3 align="center">Tron</h3>
 
 
-<pre align="center">
-Jeu TRON dans un onglet web
-programmer par:
-  - Etan MACRET
+<p align="center">
+Jeu TRON dans un onglet web<br>
+programmer par:<br>
+  - Etan MACRET<br>
   - Frank FOZI SAADEU
-</pre>
+</p>
